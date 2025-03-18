@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>IoT Dashboard Smart City</h1>
+        
+        <div class="device-container">
+            <div class="section">
+                <span>Device 1 Status: <span id="device-status-1">OFF</span></span>
+                <button id="btn-toggle-1" onclick="toggleDevice(1)">Turn ON</button>
+                
+                <div class="sensor-data">
+                    <p>🌡️ Temperature: <span id="temp-1">--</span> °C</p>
+                    <p>💧 Humidity: <span id="humidity-1">--</span> %</p>
+                    <p>💡 Light Intensity: <span id="light-1">--</span> lux</p>
+                    <p>🔊 Noise Level: <span id="noise-1">--</span> dB</p>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="sensorChart1"></canvas>
+                </div>
+            </div>
+
+            <div class="section">
+                <span>Device 2 Status: <span id="device-status-2">OFF</span></span>
+                <button id="btn-toggle-2" onclick="toggleDevice(2)">Turn ON</button>
+
+                <div class="sensor-data">
+                    <p>🌡️ Temperature: <span id="temp-2">--</span> °C</p>
+                    <p>💧 Humidity: <span id="humidity-2">--</span> %</p>
+                    <p>💡 Light Intensity: <span id="light-2">--</span> lux</p>
+                    <p>🔊 Noise Level: <span id="noise-2">--</span> dB</p>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="sensorChart2"></canvas>
+                </div>
+            </div>
+
+            <div class="section">
+                <span>Device 3 Status: <span id="device-status-3">OFF</span></span>
+                <button id="btn-toggle-3" onclick="toggleDevice(3)">Turn ON</button>
+
+                <div class="sensor-data">
+                    <p>🌡️ Temperature: <span id="temp-3">--</span> °C</p>
+                    <p>💧 Humidity: <span id="humidity-3">--</span> %</p>
+                    <p>💡 Light Intensity: <span id="light-3">--</span> lux</p>
+                    <p>🔊 Noise Level: <span id="noise-3">--</span> dB</p>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="sensorChart3"></canvas>
+                </div>
+                <div class="switch-mode-container">
+                    <button id="btn-switch-mode" onclick="window.location.href='charts.html'">View Charts Only</button>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let deviceStates = [false, false, false];
+        let sensorData1 = [];
+        let sensorData2 = [];
+        let sensorData3 = [];
+        let chart1, chart2, chart3;
+
+        function toggleDevice(device) {
+            deviceStates[device - 1] = !deviceStates[device - 1];
+            let statusElement = document.getElementById(`device-status-${device}`);
+            let buttonElement = document.getElementById(`btn-toggle-${device}`);
+
+            if (deviceStates[device - 1]) {
+                statusElement.innerText = 'ON';
+                buttonElement.innerText = 'Turn OFF';
+            } else {
+                statusElement.innerText = 'OFF';
+                buttonElement.innerText = 'Turn ON';
+            }
+        }
+
+        function updateSensorData(device) {
+            document.getElementById(`temp-${device}`).innerText = (20 + Math.random() * 10).toFixed(1);
+            document.getElementById(`humidity-${device}`).innerText = (50 + Math.random() * 20).toFixed(1);
+            document.getElementById(`light-${device}`).innerText = (100 + Math.random() * 900).toFixed(1);
+            document.getElementById(`noise-${device}`).innerText = (30 + Math.random() * 40).toFixed(1);
+        }
+
+        function updateChart(chart, sensorData) {
+            if (sensorData.length > 10) sensorData.shift();
+            sensorData.push({ x: new Date().toLocaleTimeString(), y: Math.random() * 100 });
+            chart.update();
+        }
+        let chartMode = false;
+
+function switchMode() {
+    chartMode = !chartMode;
+    const deviceSections = document.querySelectorAll(".section");
+
+    deviceSections.forEach(section => {
+        const status = section.querySelector("span");
+        const button = section.querySelector("button");
+        const sensorData = section.querySelector(".sensor-data");
+
+        if (chartMode) {
+            status.style.display = "none";
+            button.style.display = "none";
+            sensorData.style.display = "none";
+        } else {
+            status.style.display = "block";
+            button.style.display = "block";
+            sensorData.style.display = "block";
+        }
+    });
+
+    document.getElementById("btn-switch-mode").innerText = chartMode ? "View Status" : "View Charts Only";
+}
+
+        window.onload = function() {
+            const ctx1 = document.getElementById('sensorChart1').getContext('2d');
+            chart1 = new Chart(ctx1, {
+                type: 'line',
+                data: { datasets: [{ label: 'Sensor Data 1', data: [], borderColor: '#007bff', fill: false }] },
+                options: { scales: { x: { type: 'time', time: { unit: 'second' } }, y: { beginAtZero: true } } }
+            });
+
+            const ctx2 = document.getElementById('sensorChart2').getContext('2d');
+            chart2 = new Chart(ctx2, {
+                type: 'line',
+                data: { datasets: [{ label: 'Sensor Data 2', data: [], borderColor: '#28a745', fill: false }] },
+                options: { scales: { x: { type: 'time', time: { unit: 'second' } }, y: { beginAtZero: true } } }
+            });
+
+            const ctx3 = document.getElementById('sensorChart3').getContext('2d');
+            chart3 = new Chart(ctx3, {
+                type: 'line',
+                data: { datasets: [{ label: 'Sensor Data 3', data: [], borderColor: '#ff5733', fill: false }] },
+                options: { scales: { x: { type: 'time', time: { unit: 'second' } }, y: { beginAtZero: true } } }
+            });
+                    
+            setInterval(() => {
+                updateChart(chart1, sensorData1);
+                updateChart(chart2, sensorData2);
+                updateChart(chart3, sensorData3);
+                updateSensorData(1);
+                updateSensorData(2);
+                updateSensorData(3);
+            }, 2000);
+        };
+    </script>
+</body>
+</html>

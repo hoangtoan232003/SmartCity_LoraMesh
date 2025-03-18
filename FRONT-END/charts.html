@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT Charts</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="base.css">
+</head>
+<body>
+    <div class="container">
+        <h1>IoT Sensor Data Charts</h1>
+
+        <div class="chart-section">
+            <h2>Device 1 Sensors</h2>
+            <canvas id="sensorChart1"></canvas>
+        </div>
+
+        <div class="chart-section">
+            <h2>Device 2 Sensors</h2>
+            <canvas id="sensorChart2"></canvas>
+        </div>
+
+        <div class="chart-section">
+            <h2>Device 3 Sensors</h2>
+            <canvas id="sensorChart3"></canvas>
+        </div>
+
+        <div class="switch-mode-container">
+            <button id="back-button" onclick="window.location.href='index.html'">Back to Dashboard</button>
+        </div>
+    </div>
+    
+
+    <script>
+        function createChart(canvasId) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            return new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        { label: 'Temperature (°C)', data: [], borderColor: 'red', fill: false },
+                        { label: 'Humidity (%)', data: [], borderColor: 'blue', fill: false },
+                        { label: 'Light (lux)', data: [], borderColor: 'yellow', fill: false },
+                        { label: 'Noise (dB)', data: [], borderColor: 'green', fill: false }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { title: { display: true, text: 'Time' } },
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        let chart1 = createChart('sensorChart1');
+        let chart2 = createChart('sensorChart2');
+        let chart3 = createChart('sensorChart3');
+
+        function updateChart(chart) {
+            let now = new Date().toLocaleTimeString();
+
+            if (chart.data.labels.length > 10) chart.data.labels.shift();
+            chart.data.labels.push(now);
+
+            chart.data.datasets[0].data.push((20 + Math.random() * 10).toFixed(1)); // Temp
+            chart.data.datasets[1].data.push((50 + Math.random() * 20).toFixed(1)); // Humidity
+            chart.data.datasets[2].data.push((100 + Math.random() * 900).toFixed(1)); // Light
+            chart.data.datasets[3].data.push((30 + Math.random() * 40).toFixed(1)); // Noise
+
+            if (chart.data.datasets[0].data.length > 10) {
+                chart.data.datasets.forEach(dataset => dataset.data.shift());
+            }
+
+            chart.update();
+        }
+
+        setInterval(() => {
+            updateChart(chart1);
+            updateChart(chart2);
+            updateChart(chart3);
+        }, 2000);
+    </script>
+</body>
+</html>

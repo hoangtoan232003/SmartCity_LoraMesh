@@ -1,0 +1,114 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    background-image: url('https://sohanews.sohacdn.com/160588918557773824/2022/10/6/117-truong-dai-hoc-16650248354011254229546.jpg');
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    padding: 10px;
+}
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.5);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Căn giữa nội dung */
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.section {
+    width: 100%;
+    max-width: 300px; /* Đảm bảo không bị tràn ra ngoài */
+    background: rgba(255, 255, 255, 0.7);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 2 2 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Căn nội dung về đầu */
+    gap: 5px;
+    text-align: center;
+    min-width: 210px;
+    flex: 1;
+}
+
+.status {
+    width: 100%;
+    font-weight: bold;
+    font-size: 20px;
+    font-weight: 900;
+    margin-bottom: 10px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 2px solid #007bff;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+button {
+    padding: 5px 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+.chart-container {
+    width: 100%;
+    max-width: 300px;
+    margin: auto;
+}
+.device-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap; /* Tự động xuống hàng khi không đủ chỗ */
+}
+.device-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Căn tất cả nội dung về trái */
+    gap: 5px;
+    width: 100%; /* Đảm bảo không bị bó hẹp */
+}
+
+.device-info p {
+    display: block;  /* Đảm bảo mỗi dòng chiếm toàn bộ chiều rộng */
+    text-align: left; /* Căn nội dung về bên trái */
+    margin: 5px 0;    /* Đảm bảo không có khoảng cách thừa */
+    width: 100%;      /* Đảm bảo không bị bó hẹp */
+}
+.sensor-data {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Căn tất cả về trái */
+    gap: 5px;
+    width: 100%;
+}
+
+.sensor-data p {
+    display: flex;
+    align-items: center; /* Đảm bảo icon và chữ trên cùng một hàng */
+    width: 100%; /* Tránh bị bó hẹp */
+    margin: 0; /* Loại bỏ margin thừa */
+    padding: 0; /* Đảm bảo không có padding ảnh hưởng */
+    text-align: left; /* Căn chữ về trái */
+}
+
+.sensor-data p span {
+    margin-left: 0px; /* Tạo khoảng cách giữa icon và giá trị */
+}

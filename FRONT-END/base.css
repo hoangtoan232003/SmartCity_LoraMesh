@@ -1,0 +1,62 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    background-image: url('https://sohanews.sohacdn.com/160588918557773824/2022/10/6/117-truong-dai-hoc-16650248354011254229546.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Làm trong suốt phần container nhưng vẫn giữ đồ thị hiển thị rõ */
+.container {
+    width: 80%;
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.2); /* Làm mờ container để hiển thị nền */
+    backdrop-filter: blur(10px); /* Làm mờ nền để chữ dễ đọc */
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Đảm bảo đồ thị vẫn hiển thị rõ với nền trắng */
+.chart-container {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Viền mờ */
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.7); /* Nền trắng trong suốt */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+
+/* Giữ nền trắng cho biểu đồ */
+canvas {
+    width: 100% !important;
+    height: 300px !important;
+    background-color: white; /* Đảm bảo nền trắng cho đồ thị */
+}
+
+/* Nút Back to Dashboard */
+.back-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.back-button:hover {
+    background-color: #0056b3;
+}
