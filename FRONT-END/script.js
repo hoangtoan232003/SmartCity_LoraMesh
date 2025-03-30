@@ -56,10 +56,10 @@ fetch('http://localhost:5000/api/sensor/latest')
             let buttonElement = document.getElementById(`btn-toggle-${deviceId}`);
 
             if (tempElement && humidityElement && lightElement && noiseElement && statusElement && buttonElement) {
-                tempElement.innerText = device.temperature + " °C";
-                humidityElement.innerText = device.humidity + " %";
-                lightElement.innerText = device.light_intensity + " lux";
-                noiseElement.innerText = device.noise_level + " dB";
+                tempElement.innerText = device.temperature + " ";
+                humidityElement.innerText = device.humidity + " ";
+                lightElement.innerText = device.light_intensity + " ";
+                noiseElement.innerText = device.noise_level + " ";
 
                 if (device.status === "ON") {
                     statusElement.innerText = "ON";
