@@ -60,10 +60,18 @@ def on_connect(client, userdata, flags, reason_code, properties=None):
 @app.route('/api/sensor/latest', methods=['GET'])
 def get_latest_sensor_data():
     try:
-        cursor.execute("SELECT * FROM device_data ORDER BY id DESC LIMIT 1")
-        row = cursor.fetchone()
-        if row:
-            data = {
+        cursor.execute("""
+            SELECT t1.* FROM device_data t1
+            JOIN (
+                SELECT device_id, MAX(id) AS max_id
+                FROM device_data
+                GROUP BY device_id
+            ) t2 ON t1.device_id = t2.device_id AND t1.id = t2.max_id
+        """)
+        rows = cursor.fetchall()
+
+        if rows:
+            data = [{
                 "id": row[0],
                 "device_id": row[1],
                 "status": row[2],
@@ -72,10 +80,11 @@ def get_latest_sensor_data():
                 "light_intensity": row[5],
                 "noise_level": row[6],
                 "timestamp": row[7]
-            }
+            } for row in rows]
+
             return jsonify(data)
         else:
-            return jsonify({"message": "Không có dữ liệu"}), 404
+            return jsonify([]), 404  # Trả về danh sách rỗng nếu không có dữ liệu
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -99,4 +108,3 @@ if __name__ == '__main__':
 
     # Chạy Flask API
     app.run(host='0.0.0.0', port=5000, debug=False)
-
