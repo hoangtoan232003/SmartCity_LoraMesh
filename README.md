@@ -34,5 +34,70 @@ Các node cảm biến gửi dữ liệu đến Gateway theo dạng truyền tin
 - MQTT Broker: Mosquitto (chạy trên server hoặc public broker)
 - Gateway gửi dữ liệu lên topic: `city/data/<node_id>`
 - Dữ liệu dạng JSON:
+```json
+{
+  "node_id": "node1",
+  "temperature": 30.5,
+  "humidity": 65,
+  "light": 200,
+  "sound": 35,
+  "timestamp": "2025-04-11 08:00:00"
+}
+```
 
-```jB21DCDT153
+- Backend Flask subscribe và lưu dữ liệu vào MySQL
+
+## Cơ sở dữ liệu MySQL
+
+```sql
+CREATE TABLE sensor_data (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  node_id VARCHAR(50),
+  temperature FLOAT,
+  humidity FLOAT,
+  light INT,
+  sound INT,
+  timestamp DATETIME
+);
+```
+
+## Dashboard (gợi ý)
+- Flask hoặc Node.js cung cấp REST API hoặc WebSocket
+- Frontend: hiển thị bảng, biểu đồ theo node, vẽ bản đồ vị trí node (nếu có GPS)
+
+## Cài đặt nhanh
+
+### MQTT Broker (Mosquitto)
+```bash
+sudo apt update
+sudo apt install mosquitto mosquitto-clients
+```
+
+### Flask Backend
+```bash
+pip install flask paho-mqtt mysql-connector-python
+```
+
+### Cấu hình kết nối MQTT trong Flask
+```python
+client.connect("mqtt_broker_address", 1883)
+client.subscribe("city/data/#")
+```
+
+## Demo test MQTT
+```bash
+mosquitto_pub -h localhost -t city/data/test -m '{"node_id": "test", "temperature": 25}'
+```
+
+## Ghi chú thêm
+- Nên có watchdog / reconnect cho Gateway
+- Dữ liệu có thể mã hóa AES trước khi gửi
+- Có thể mở rộng thêm điều khiển actuator qua MQTT
+
+---
+
+## Tác giả
+- Hoàng Quốc Toàn - B21DCDT221 - Nhóm trưởng
+- Đào Bá Thọ - B21DCDT217
+- Tạ Quang Trường - B21DCDT026
+- Vương Tuấn Minh - B21DCDT153
