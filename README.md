@@ -27,7 +27,15 @@ Hệ thống giám sát và thu thập dữ liệu môi trường trong khu đô
 | 2     | DIO0         |
 
 ### 2. Mô hình mạng Mesh
-Các node cảm biến gửi dữ liệu đến Gateway theo dạng truyền tin mesh (ví dụ dùng thư viện RadioHead RHMesh).
+Các node cảm biến gửi dữ liệu đến Gateway theo dạng truyền tin mesh.
+
+Kiến trúc
+[Node 1]    [Node 2]    [Node 3]
+    |           |           |
+     \         |         /
+      \       |       /
+        --> [Gateway] --> MQTT (Broker)
+
 
 ## Giao tiếp MQTT
 
