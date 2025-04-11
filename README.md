@@ -30,7 +30,6 @@ Hệ thống giám sát và thu thập dữ liệu môi trường trong khu đô
 Mạng LoRa Mesh bao gồm nhiều node cảm biến (Node) có khả năng chuyển tiếp dữ liệu qua nhau (multi-hop) để gửi về Gateway. Gateway sẽ thu thập dữ liệu từ các node và chuyển tiếp đến MQTT Broker để xử lý tiếp theo.
 
 #### ⚙️ Kiến trúc mạng:
-
 ```plaintext
  [Node 1] --------\
     |              \
@@ -39,6 +38,7 @@ Mạng LoRa Mesh bao gồm nhiều node cảm biến (Node) có khả năng chuy
     |               /
     |              /
  [Node 2] --------/
+
 
 
 Node 1, 2, 3 là các node chứa cảm biến (gồm: nhiệt độ, ánh sáng, âm thanh). Có thể giao tiếp với nhau để chuyển tiếp dữ liệu.
