@@ -27,15 +27,28 @@ Hệ thống giám sát và thu thập dữ liệu môi trường trong khu đô
 | 2     | DIO0         |
 
 ### 2. Mô hình mạng Mesh
-Các node cảm biến gửi dữ liệu đến Gateway theo dạng truyền tin mesh.
+Mạng LoRa Mesh bao gồm nhiều node cảm biến (Node) có khả năng chuyển tiếp dữ liệu qua nhau (multi-hop) để gửi về Gateway. Gateway sẽ thu thập dữ liệu từ các node và chuyển tiếp đến MQTT Broker để xử lý tiếp theo.
 
-Kiến trúc
-[Node 1]    [Node 2]    [Node 3]
-    |           |           |
-     \         |         /
-      \       |       /
-        --> [Gateway] --> MQTT (Broker)
+⚙️ Kiến trúc mạng:
+          [Node 1]       [Node 2]
+              \           /
+               \         /
+                \       /
+                [Node 3]
+                    |
+                    |
+                [Gateway]
+                    |
+              [MQTT Broker]
 
+Node 1, 2, 3: Các node cảm biến (ví dụ: nhiệt độ, ánh sáng, âm thanh). Có thể giao tiếp với nhau để chuyển tiếp dữ liệu.
+Gateway: Thiết bị trung tâm thu thập dữ liệu từ các node và gửi đến MQTT Broker.
+MQTT Broker: Nơi lưu trữ và phân phối dữ liệu đến hệ thống backend (ví dụ: Flask + MySQL).
+
+🔁 Đặc điểm mạng:
+Giao tiếp theo kiểu Mesh, đảm bảo độ tin cậy cao và mở rộng linh hoạt.
+Dữ liệu được truyền nhiều bước nếu node không nằm trong phạm vi của gateway.
+Mỗi node có thể vừa là nguồn dữ liệu, vừa là trạm chuyển tiếp.
 
 ## Giao tiếp MQTT
 
