@@ -1,1 +1,120 @@
-- Hướng dẫn : https://docs.google.com/document/d/1pNfbMpdUObUnIw9g-gESRkynlBEPSRz9NxrIEDkhNKM/edit?tab=t.0
+Cài mosquitto
+Tải về Mosquitto : https://mosquitto.org/download/
+Thêm Mosquitto vào PATH : "C:\mosquitto"
+Check : mosquitto -v
+Test pub-sub: 
+mosquitto_pub -h localhost -p 1883 -t "test/topic" -m "Hello MQTT!"
+mosquitto_sub -h localhost -p 1883 -t "test/topic"
+Để thiết lập user/password cho Mosquitto, bạn cần làm theo các bước sau:
+Tạo User & Password: mosquitto_passwd -c passwd.txt xxx(nhập mk)
+
+ Cấu hình file .conf: 
+allow_anonymous false
+password_file C:\mosquitto\passwd.txt
+listener 1883
+net stop mosquitto
+net start mosquitto
+
+Cài MySQL
+Cài đặt MySQL Server & MySQL Workbench
+Tạo cơ sở dữ liệu mới
+
+Tạo 1 database : CREATE DATABASE sensor;
+Truy cập vào database : USE sensor;
+ Tạo bảng sensor_data để lưu dữ liệu cảm biến
+CREATE TABLE sensor_data (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    temperature FLOAT NOT NULL,
+    humidity FLOAT NOT NULL,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+Kiểm tra bảng : SHOW TABLES;
+xem chi tiết cấu trúc bảng: DESC sensor_data;
+
+
+Cài python 
+Môi trường python: pip install paho-mqtt mysql-connector-python.
+Cho visual studio code
+Tạo database
+USE test;
+CREATE TABLE customer (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    temperature FLOAT,
+    humidity FLOAT,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+DESCRIBE customer;
+SELECT * FROM customer;
+
+File backend
+import paho.mqtt.client as mqtt
+import mysql.connector
+import json
+
+# Cấu hình thông tin kết nối MySQL
+db_config = {
+    'host': 'localhost',         # Hoặc IP của server MySQL
+    'user': 'root',              # Hoặc user khác (VD: smartcity_user)
+    'password': '12345',        # Password của user
+    'database': 'test'           # Tên database, ở đây là "test"
+}
+
+
+# Tạo kết nối đến MySQL
+conn = mysql.connector.connect(**db_config)
+cursor = conn.cursor()
+
+# Hàm xử lý khi nhận được message từ MQTT
+def on_message(client, userdata, msg):
+    print(f"Nhận được message từ topic {msg.topic}: {msg.payload.decode()}")
+    try:
+        # Giả sử payload dạng JSON, ví dụ:
+        # { "temperature": 25.5, "humidity": 70.2 }
+        data = json.loads(msg.payload.decode())
+       
+        temperature = data.get("temperature")
+        humidity = data.get("humidity")
+
+
+        # Câu lệnh chèn vào bảng "customer"
+        sql = "INSERT INTO customer (temperature, humidity) VALUES (%s, %s)"
+        cursor.execute(sql, (temperature, humidity))
+        conn.commit()
+       
+        print("Đã chèn dữ liệu vào MySQL.")
+    except Exception as e:
+        print("Lỗi khi xử lý message:", e)
+
+
+# Hàm xử lý khi kết nối tới MQTT Broker
+def on_connect(client, userdata, flags, rc):
+    if rc == 0:
+        print("Kết nối MQTT Broker thành công!")
+        # Đăng ký topic cần subscribe, ví dụ: "customer"
+        client.subscribe("customer")
+    else:
+        print(f"Kết nối MQTT Broker thất bại, mã lỗi: {rc}")
+
+# Thiết lập client MQTT
+client = mqtt.Client()
+
+# Nếu broker yêu cầu user/pass, thiết lập:
+client.username_pw_set(username="xxx", password="yyyyyy")
+
+client.on_connect = on_connect
+client.on_message = on_message
+
+# Kết nối tới Mosquitto Broker
+# Giả sử Mosquitto chạy local, port 1883
+client.connect("localhost", 1883, 60)
+
+# Vòng lặp để client lắng nghe message
+client.loop_forever()
+
+
+
+
+
+
