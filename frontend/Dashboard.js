@@ -2,23 +2,29 @@ let deviceStates = {};
 let sensorData = {};
 let charts = {};
 
-function toggleDevice(deviceId) {
-    deviceStates[deviceId] = !deviceStates[deviceId];
-    let statusElement = document.getElementById(`device-status-${deviceId}`);
-    let buttonElement = document.getElementById(`btn-toggle-${deviceId}`);
+async function toggleDevice(deviceId) {
+    const statusElement = document.getElementById(`device-status-${deviceId}`);
+    const buttonElement = document.getElementById(`btn-toggle-${deviceId}`);
+    const currentStatus = statusElement.innerText.trim();
 
-    if (deviceStates[deviceId]) {
-        statusElement.innerText = 'ON';
-        buttonElement.innerText = 'Turn OFF';
-        // Gửi yêu cầu bật LED đến ESP32
-        fetch(`http://localhost:5000/api/device/${deviceId}/on`, { method: 'POST' });
-    } else {
-        statusElement.innerText = 'OFF';
-        buttonElement.innerText = 'Turn ON';
-        // Gửi yêu cầu tắt LED đến ESP32
-        fetch(`http://localhost:5000/api/device/${deviceId}/off`, { method: 'POST' });
+    const newStatus = currentStatus === "OFF" ? "ON" : "OFF";
+    const endpoint = `http://localhost:5000/api/device/${deviceId}/${newStatus.toLowerCase()}`;
+
+    try {
+        const response = await fetch(endpoint, { method: 'POST' });
+        if (response.ok) {
+            statusElement.innerText = newStatus;
+            buttonElement.innerText = (newStatus === "ON") ? "Turn OFF" : "Turn ON";
+        } else {
+            const err = await response.json();
+            alert("Lỗi điều khiển thiết bị: " + (err.error || "Không rõ lỗi"));
+        }
+    } catch (error) {
+        console.error("Lỗi khi gửi yêu cầu điều khiển:", error);
+        alert("Không thể điều khiển thiết bị.");
     }
 }
+
 
 
 function updateChart(deviceId, newData) {
