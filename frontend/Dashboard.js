@@ -65,24 +65,14 @@ function fetchSensorData() {
                 let humidityElement = document.getElementById(`humidity-${deviceId}`);
                 let lightElement = document.getElementById(`light-${deviceId}`);
                 let noiseElement = document.getElementById(`noise-${deviceId}`);
-                let statusElement = document.getElementById(`device-status-${deviceId}`);
-                let buttonElement = document.getElementById(`btn-toggle-${deviceId}`);
 
-                if (tempElement && humidityElement && lightElement && noiseElement && statusElement && buttonElement) {
+                if (tempElement && humidityElement && lightElement && noiseElement) {
                     tempElement.innerText = device.temperature + " °C";
                     humidityElement.innerText = device.humidity + " %";
                     lightElement.innerText = device.light_intensity + " lux";
-noiseElement.innerText = device.noise_level + " dB";
+                    noiseElement.innerText = device.noise_level + " dB";
 
-                    if (device.status === "ON") {
-                        statusElement.innerText = "ON";
-                        buttonElement.innerText = "Turn OFF";
-                    } else {
-                        statusElement.innerText = "OFF";
-                        buttonElement.innerText = "Turn ON";
-                    }
-
-                    // Cập nhật biểu đồ nhiệt độ cho thiết bị
+                    // Không cập nhật status và nút ở đây nữa
                     updateChart(deviceId, device.temperature);
                 }
             });
@@ -92,6 +82,7 @@ noiseElement.innerText = device.noise_level + " dB";
             alert("Không thể lấy dữ liệu cảm biến. Vui lòng thử lại sau.");
         });
 }
+
 
 window.onload = function() {
     initializeCharts();
