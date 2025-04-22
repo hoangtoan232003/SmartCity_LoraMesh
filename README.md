@@ -66,7 +66,7 @@ Mạng LoRa Mesh bao gồm nhiều node cảm biến (Node) có khả năng chuy
     |               /
     |              /
  [Node 2] --------/
-
+```
 Node 1, 2, 3 là các node chứa cảm biến (gồm: nhiệt độ, ánh sáng, âm thanh). Có thể giao tiếp với nhau để chuyển tiếp dữ liệu.
 Gateway: Thiết bị trung tâm thu thập dữ liệu từ các node và gửi đến MQTT Broker.
 MQTT Broker: Nơi lưu trữ và phân phối dữ liệu đến hệ thống backend.
