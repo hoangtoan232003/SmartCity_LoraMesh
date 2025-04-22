@@ -1,19 +1,22 @@
 # 🔌 Hệ Thống Đô Thị Thông Minh Sử Dụng LoRa Mesh
 
-> Hệ thống giám sát môi trường khu đô thị thông minh bằng mạng LoRa Mesh. Thu thập dữ liệu từ các node cảm biến, gửi về Gateway, chuyển tiếp lên server qua MQTT để lưu trữ và phân tích.  
-> Phục vụ mục đích nghiên cứu, giáo dục và ứng dụng thực tế.
+> Mô tả ngắn gọn: Hệ thống giám sát và thu thập dữ liệu môi trường trong khu đô thị thông minh, sử dụng mạng cảm biến không dây LoRa Mesh để truyền dữ liệu từ các node cảm biến đến Gateway. Gateway sẽ gửi dữ liệu lên backend thông qua MQTT, backend lưu vào cơ sở dữ liệu MySQL và cung cấp API phục vụ giao diện dashboard.
 
 ---
 
 ## 📑 Mục Lục
 
 - [Giới thiệu](#giới-thiệu)
-- [Thông số kỹ thuật](#thông-số-kỹ-thuật)
-- [Danh sách linh kiện](#danh-sách-linh-kiện)
-- [Sơ đồ nguyên lý và PCB](#sơ-đồ-nguyên-lý-và-pcb)
-- [Hướng dẫn lắp ráp](#hướng-dẫn-lắp-ráp)
-- [Lập trình firmware](#lập-trình-firmware)
-- [Cách sử dụng](#cách-sử-dụng)
+- [Cấu tạo phần cứng](#cấu-tạo-phần-cứng)
+- [Giao tiếp LoRa Mesh](#giao-tiếp-lora-mesh)
+- [Giao tiếp MQTT](#giao-tiếp-mqtt)
+- [Cơ sở dữ liệu MySQL](#cơ-sở-dữ-liệu-mysql)
+- [Cài đặt nhanh](#cài-đặt-nhanh)
+- [Cài đặt MQTT Broker (Mosquitto)](#cài-đặt-mqtt-broker-mosquitto)
+- [Cài đặt Flask Backend](#cài-đặt-flask-backend)
+- [Cài đặt cơ sở dữ liệu MySQL](#cài-đặt-cơ-sở-dữ-liệu-mysql)
+- [Ví dụ code nhận dữ liệu MQTT](#ví-dụ-code-nhận-dữ-liệu-mqtt)
+- [Demo test MQTT](#demo-test-mqtt)
 - [Kiểm thử](#kiểm-thử)
 - [Ảnh/Video demo](#ảnhvideo-demo)
 - [Đóng góp](#đóng-góp)
@@ -23,86 +26,115 @@
 
 ## 👋 Giới Thiệu
 
-Dự án xây dựng hệ thống thu thập dữ liệu môi trường trong khu đô thị bằng mạng cảm biến không dây LoRa Mesh. Các node cảm biến đo nhiệt độ, độ ẩm, ánh sáng và âm thanh, sau đó chuyển tiếp dữ liệu về Gateway.  
-Gateway gửi dữ liệu qua MQTT lên server Flask để lưu vào cơ sở dữ liệu MySQL và hiển thị qua dashboard.  
-**Đối tượng sử dụng:** Sinh viên, kỹ sư nghiên cứu về IoT, đô thị thông minh.
+Hệ thống giám sát và thu thập dữ liệu môi trường trong khu đô thị thông minh. Dự án sử dụng mạng cảm biến không dây LoRa Mesh để truyền tải dữ liệu giữa các node cảm biến và Gateway. Dữ liệu thu thập được gửi lên server backend thông qua giao thức MQTT, sau đó được lưu vào cơ sở dữ liệu MySQL và cung cấp API cho giao diện dashboard.
 
 ---
 
-## 📐 Thông Số Kỹ Thuật
+## 📐 Cấu Tạo Phần Cứng
 
-| Thành phần     | Thông tin                          |
-|----------------|------------------------------------|
-| MCU            | ESP32-WROOM-32                     |
-| Giao tiếp LoRa | SX1278 (SPI)                       |
-| Cảm biến       | DHT11 (nhiệt độ, độ ẩm), BH1750 (ánh sáng), microphone (âm thanh) |
-| Gateway        | ESP32 kết nối WiFi và LoRa          |
-| Giao tiếp Server | MQTT Broker (Mosquitto), Flask Backend |
-| CSDL           | MySQL                               |
+| Thành phần      | Mô tả                                |
+|----------------|----------------------------------------|
+| Node cảm biến  | ESP32 + Cảm biến DHT11, BH1750, âm thanh |
+| Gateway        | ESP32 có LoRa, kết nối WiFi            |
+| Backend        | Server Flask, kết nối MQTT broker       |
+| CSDL           | MySQL                                  |
 
 ---
 
-## 🧰 Danh Sách Linh Kiện
+## 🔧 Giao Tiếp LoRa Mesh
 
-| Tên linh kiện           | Số lượng | Ghi chú                     |
-|--------------------------|----------|-----------------------------|
-| ESP32 DevKit v1           | 4        | 3 node + 1 gateway          |
-| Module LoRa SX1278        | 4        | 3 node + 1 gateway          |
-| Cảm biến DHT11            | 3        | Đo nhiệt độ, độ ẩm          |
-| Cảm biến ánh sáng BH1750  | 3        | Đo cường độ ánh sáng        |
-| Microphone analog         | 3        | Đo mức âm thanh môi trường  |
-| Nguồn 5V (hoặc pin Li-ion) | 4        | Cho ESP32 và LoRa Module    |
-
----
-
-## 🔧 Sơ Đồ Nguyên Lý và PCB
-
-- 📎 [Schematic (PDF)](docs/schematic.pdf) *(cập nhật sau)*
-- 📎 [PCB Layout (Gerber)](docs/gerber.zip) *(cập nhật sau)*
-- 📎 [File thiết kế (KiCad/Eagle)](docs/project.kicad_pcb) *(cập nhật sau)*
-
-### Kết nối phần cứng LoRa SPI:
+### 1. Kết nối phần cứng LoRa SPI
 
 | ESP32 | LoRa SX1278 |
-|-------|-------------|
-| 18    | SCK         |
-| 19    | MISO        |
-| 23    | MOSI        |
-| 5     | NSS (CS)    |
-| 14    | RESET       |
-| 2     | DIO0        |
+|-------|--------------|
+| 18    | SCK          |
+| 19    | MISO         |
+| 23    | MOSI         |
+| 5     | NSS (CS)     |
+| 14    | RESET        |
+| 2     | DIO0         |
 
----
+### 2. Mô hình mạng Mesh
+Mạng LoRa Mesh bao gồm nhiều node cảm biến (Node) có khả năng chuyển tiếp dữ liệu qua nhau (multi-hop) để gửi về Gateway. Gateway sẽ thu thập dữ liệu từ các node và chuyển tiếp đến MQTT Broker để xử lý tiếp theo.
 
-## 🔩 Hướng Dẫn Lắp Ráp
+#### ⚙️ Kiến trúc mạng:
+```plaintext
+ [Node 1] --------\
+    |              \
+    |               \
+    |                [Node 3] ------ [Gateway] ------ [MQTT Broker]
+    |               /
+    |              /
+ [Node 2] --------/
+Node 1, 2, 3 là các node chứa cảm biến (gồm: nhiệt độ, ánh sáng, âm thanh). Có thể giao tiếp với nhau để chuyển tiếp dữ liệu.
+Gateway: Thiết bị trung tâm thu thập dữ liệu từ các node và gửi đến MQTT Broker.
+MQTT Broker: Nơi lưu trữ và phân phối dữ liệu đến hệ thống backend.
 
-1. Kết nối ESP32 với module LoRa SX1278 theo sơ đồ trên.
-2. Gắn cảm biến DHT11, BH1750 và microphone vào ESP32 node.
-3. Hàn chắc các chân, kiểm tra ngắn mạch.
-4. Cấp nguồn 5V hoặc dùng pin.
-5. Nạp firmware cho các node và Gateway.
+🔁 Đặc điểm mạng:
+Giao tiếp theo kiểu Mesh, đảm bảo độ tin cậy cao và mở rộng linh hoạt.
+Dữ liệu được truyền nhiều bước nếu node không nằm trong phạm vi của gateway.
+Mỗi node có thể vừa là nguồn dữ liệu, vừa là trạm chuyển tiếp.
 
----
+📡 Giao Tiếp MQTT
+MQTT Broker: Mosquitto (chạy trên server hoặc public broker)
 
-## 💻 Lập Trình Firmware
+Gateway gửi dữ liệu lên topic: city/data/<node_id>
 
-- **Ngôn ngữ:** C++ (Arduino IDE)
-- **Firmware node:** Thu thập dữ liệu, gửi qua LoRa
-- **Firmware gateway:** Nhận dữ liệu LoRa, gửi lên MQTT Broker
-- **Cách nạp firmware:**
-  ```bash
-  pio run --target upload
-Cách Sử Dụng
-Cài đặt MQTT Broker (Mosquitto):
+Dữ liệu dạng JSON:
+
+json
+Sao chép
+Chỉnh sửa
+{
+  "node_id": "node1",
+  "temperature": 30.5,
+  "humidity": 65,
+  "light": 200,
+  "sound": 35,
+  "timestamp": "2025-04-11 08:00:00"
+}
+Backend Flask subscribe và lưu dữ liệu vào MySQL.
+
+🗃️ Cơ Sở Dữ Liệu MySQL
+sql
+Sao chép
+Chỉnh sửa
+CREATE TABLE sensor_data (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  node_id VARCHAR(50),
+  temperature FLOAT,
+  humidity FLOAT,
+  light INT,
+  sound INT,
+  timestamp DATETIME
+);
+Cài Đặt Nhanh
+Cài Đặt MQTT Broker (Mosquitto)
+bash
+Sao chép
+Chỉnh sửa
 sudo apt update
 sudo apt install mosquitto mosquitto-clients
-Chạy Flask Backend:
+Cài Đặt Flask Backend
 bash
 Sao chép
 Chỉnh sửa
 pip install flask paho-mqtt mysql-connector-python
-Ví dụ code nhận dữ liệu MQTT bằng Python:
+Cài Đặt Cơ Sở Dữ Liệu MySQL
+bash
+Sao chép
+Chỉnh sửa
+sudo apt install mysql-server
+sudo mysql_secure_installation
+Tạo database và bảng:
 
+sql
+Sao chép
+Chỉnh sửa
+CREATE DATABASE iot;
+USE iot;
+-- Execute the sensor_data table creation script
+💻 Ví Dụ Code Nhận Dữ Liệu MQTT
 python
 Sao chép
 Chỉnh sửa
@@ -128,29 +160,11 @@ client.connect("localhost", 1883)
 client.subscribe("city/data/#")
 client.on_message = on_message
 client.loop_forever()
-Topic dữ liệu: city/data/<node_id>
-
-Dữ liệu mẫu:
-
-json
-Sao chép
-Chỉnh sửa
-{
-  "node_id": "node1",
-  "temperature": 30.5,
-  "humidity": 65,
-  "light": 200,
-  "sound": 35
-}
-🛠️ Kiểm Thử
-Test MQTT Gateway:
-
+🛠️ Demo Test MQTT
 bash
 Sao chép
 Chỉnh sửa
 mosquitto_pub -h localhost -t city/data/test -m '{"node_id": "test", "temperature": 25}'
-Giám sát log nhận/gửi dữ liệu tại Gateway và Backend.
-
 Kiểm tra dữ liệu lưu trữ trong MySQL:
 
 sql
@@ -162,7 +176,9 @@ Sẽ cập nhật sau khi hoàn thành hệ thống thực tế.
 
 🤝 Đóng Góp
 Fork repo và gửi pull request.
+
 Góp ý cải tiến thêm chức năng mới.
+
 Báo lỗi tại phần Issues.
 
 📜 Giấy Phép
