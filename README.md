@@ -66,6 +66,7 @@ Mạng LoRa Mesh bao gồm nhiều node cảm biến (Node) có khả năng chuy
     |               /
     |              /
  [Node 2] --------/
+
 Node 1, 2, 3 là các node chứa cảm biến (gồm: nhiệt độ, ánh sáng, âm thanh). Có thể giao tiếp với nhau để chuyển tiếp dữ liệu.
 Gateway: Thiết bị trung tâm thu thập dữ liệu từ các node và gửi đến MQTT Broker.
 MQTT Broker: Nơi lưu trữ và phân phối dữ liệu đến hệ thống backend.
@@ -77,14 +78,9 @@ Mỗi node có thể vừa là nguồn dữ liệu, vừa là trạm chuyển ti
 
 📡 Giao Tiếp MQTT
 MQTT Broker: Mosquitto (chạy trên server hoặc public broker)
-
 Gateway gửi dữ liệu lên topic: city/data/<node_id>
 
 Dữ liệu dạng JSON:
-
-json
-Sao chép
-Chỉnh sửa
 {
   "node_id": "node1",
   "temperature": 30.5,
@@ -93,92 +89,12 @@ Chỉnh sửa
   "sound": 35,
   "timestamp": "2025-04-11 08:00:00"
 }
-Backend Flask subscribe và lưu dữ liệu vào MySQL.
 
-🗃️ Cơ Sở Dữ Liệu MySQL
-sql
-Sao chép
-Chỉnh sửa
-CREATE TABLE sensor_data (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  node_id VARCHAR(50),
-  temperature FLOAT,
-  humidity FLOAT,
-  light INT,
-  sound INT,
-  timestamp DATETIME
-);
-Cài Đặt Nhanh
-Cài Đặt MQTT Broker (Mosquitto)
-bash
-Sao chép
-Chỉnh sửa
-sudo apt update
-sudo apt install mosquitto mosquitto-clients
-Cài Đặt Flask Backend
-bash
-Sao chép
-Chỉnh sửa
-pip install flask paho-mqtt mysql-connector-python
-Cài Đặt Cơ Sở Dữ Liệu MySQL
-bash
-Sao chép
-Chỉnh sửa
-sudo apt install mysql-server
-sudo mysql_secure_installation
-Tạo database và bảng:
 
-sql
-Sao chép
-Chỉnh sửa
-CREATE DATABASE iot;
-USE iot;
--- Execute the sensor_data table creation script
-💻 Ví Dụ Code Nhận Dữ Liệu MQTT
-python
-Sao chép
-Chỉnh sửa
-import paho.mqtt.client as mqtt
-import mysql.connector
-import json
-
-def on_message(client, userdata, msg):
-    data = json.loads(msg.payload)
-    print(f"Received data: {data}")
-    # Lưu vào MySQL
-    conn = mysql.connector.connect(host="localhost", user="root", password="password", database="iot")
-    cursor = conn.cursor()
-    sql = "INSERT INTO sensor_data (node_id, temperature, humidity, light, sound, timestamp) VALUES (%s, %s, %s, %s, %s, NOW())"
-    val = (data['node_id'], data['temperature'], data['humidity'], data['light'], data['sound'])
-    cursor.execute(sql, val)
-    conn.commit()
-    cursor.close()
-    conn.close()
-
-client = mqtt.Client()
-client.connect("localhost", 1883)
-client.subscribe("city/data/#")
-client.on_message = on_message
-client.loop_forever()
-🛠️ Demo Test MQTT
-bash
-Sao chép
-Chỉnh sửa
-mosquitto_pub -h localhost -t city/data/test -m '{"node_id": "test", "temperature": 25}'
-Kiểm tra dữ liệu lưu trữ trong MySQL:
-
-sql
-Sao chép
-Chỉnh sửa
-SELECT * FROM sensor_data;
-📸 Ảnh/Video Demo
-Sẽ cập nhật sau khi hoàn thành hệ thống thực tế.
 
 🤝 Đóng Góp
 Fork repo và gửi pull request.
-
 Góp ý cải tiến thêm chức năng mới.
-
 Báo lỗi tại phần Issues.
 
 📜 Giấy Phép
