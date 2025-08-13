@@ -36,7 +36,7 @@ Hệ thống giám sát môi trường ứng dụng trong đô thị thông minh
 - frontend/       # Mã nguồn frontend
 - hardware_code/  # Code điều khiển phần cứng
 - docs/           # Tài liệu dự án
-- results/        # Kết quả test (.csv, log, ...)
+- results/        # Kết quả test (.csv,...)
 
 
 ## 📐 Thông Số Kỹ Thuật
