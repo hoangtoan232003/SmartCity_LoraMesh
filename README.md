@@ -31,7 +31,7 @@ Hệ thống giám sát môi trường ứng dụng trong đô thị thông minh
 
 ---
 
-## Project Structure
+## Cấu Trúc Dự Án
 - backend/        # Mã nguồn backend
 - frontend/       # Mã nguồn frontend
 - hardware_code/  # Code điều khiển phần cứng
