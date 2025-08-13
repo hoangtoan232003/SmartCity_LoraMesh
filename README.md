@@ -4,23 +4,6 @@
 
 ---
 
-## 📑 Mục Lục
-
-- [Giới thiệu](#giới-thiệu)
-- [Thông số kỹ thuật](#thông-số-kỹ-thuật)
-- [Danh sách linh kiện](#danh-sách-linh-kiện)
-- [Sơ đồ nguyên lý và PCB](#sơ-đồ-nguyên-lý-và-pcb)
-- [Hướng dẫn lắp ráp](#hướng-dẫn-lắp-ráp)
-- [Lập trình firmware](#lập-trình-firmware)
-- [Cách sử dụng](#cách-sử-dụng)
-- [Kiểm thử](#kiểm-thử)
-- [Ảnh/Video demo](#ảnhvideo-demo)
-- [Đóng góp](#đóng-góp)
-- [Giấy phép](#giấy-phép)
-- [Tác giả](#tác-giả)
-
----
-
 ## 👋 Giới Thiệu
 
 Hệ thống giám sát môi trường ứng dụng trong đô thị thông minh, sử dụng LoRa Mesh để truyền tải dữ liệu từ nhiều node cảm biến đến Gateway. Dữ liệu sau đó được gửi đến backend thông qua MQTT, lưu trữ tại MySQL và phục vụ dashboard qua API.
